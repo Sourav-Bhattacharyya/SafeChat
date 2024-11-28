@@ -1,7 +1,7 @@
-// src/components/Signup.js
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate, Link } from 'react-router-dom';
+import '../styles/Signup.css'; // Add a CSS file for styling
 
 const Signup = () => {
   const [username, setUsername] = useState('');
@@ -21,26 +21,33 @@ const Signup = () => {
   };
 
   return (
-    <div>
-      <h2>Signup</h2>
-      <form onSubmit={handleSignup}>
-        <input
-          type="text"
-          placeholder="Username"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-          required
-        />
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        />
-        <button type="submit">Signup</button>
-      </form>
-      <p>Already have an account? <Link to="/">Login</Link></p>
+    <div className="signup-container">
+      <div className="signup-card">
+        <h2 className="signup-title">Join Us</h2>
+        <p className="signup-subtitle">Create an account to get started!</p>
+        <form onSubmit={handleSignup}>
+          <input
+            type="text"
+            placeholder="Username"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            required
+            className="signup-input"
+          />
+          <input
+            type="password"
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+            className="signup-input"
+          />
+          <button type="submit" className="signup-button">Sign Up</button>
+        </form>
+        <p className="signup-login-link">
+          Already have an account? <Link to="/">Login</Link>
+        </p>
+      </div>
     </div>
   );
 };
