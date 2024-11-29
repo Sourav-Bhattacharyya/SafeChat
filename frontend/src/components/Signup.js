@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate, Link } from 'react-router-dom';
-import '../styles/Signup.css'; // Add a CSS file for styling
+import '../styles/Signup.css';
 
 const Signup = () => {
   const [username, setUsername] = useState('');
@@ -12,7 +12,11 @@ const Signup = () => {
     e.preventDefault();
     try {
       const response = await axios.post(`${process.env.REACT_APP_API_BASE_URL}/user/signup`, { username, password });
+
+      // Store user information in localStorage
       localStorage.setItem('user_id', response.data.user_id);
+      localStorage.setItem('username', username);
+
       navigate('/chat');
     } catch (error) {
       console.error('Signup failed', error);

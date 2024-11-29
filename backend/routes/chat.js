@@ -13,4 +13,14 @@ router.get('/messages', async (req, res) => {
   }
 });
 
+// Clear Chat Messages
+router.delete('/messages', async (req, res) => {
+  try {
+    await Message.deleteMany({});
+    res.status(200).json({ message: 'Chat cleared successfully' });
+  } catch (error) {
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
 module.exports = router;

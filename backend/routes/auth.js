@@ -13,14 +13,18 @@ router.post('/signup', async (req, res) => {
     if (existingUser) {
       return res.status(400).json({ error: 'Username already exists' });
     }
+
     const hashedPassword = await bcrypt.hash(password, 10);
     const newUser = new User({ username, password: hashedPassword });
     await newUser.save();
-    res.status(201).json({ message: 'User created successfully' });
+
+    // Send user_id in response
+    res.status(201).json({ user_id: newUser._id });
   } catch (error) {
     res.status(500).json({ error: 'Server error' });
   }
 });
+
 
 // Login Route
 router.post('/login', async (req, res) => {
@@ -30,12 +34,14 @@ router.post('/login', async (req, res) => {
     if (!user) {
       return res.status(400).json({ error: 'Invalid credentials' });
     }
+
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
       return res.status(400).json({ error: 'Invalid credentials' });
     }
-    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
-    res.status(200).json({ token, userId: user._id });
+
+    // Send user_id and username in response
+    res.status(200).json({ user_id: user._id, username: user.username });
   } catch (error) {
     res.status(500).json({ error: 'Server error' });
   }

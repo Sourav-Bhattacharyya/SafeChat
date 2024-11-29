@@ -12,7 +12,11 @@ const Login = () => {
     e.preventDefault();
     try {
       const response = await axios.post(`${process.env.REACT_APP_API_BASE_URL}/user/login`, { username, password });
+
+      // Store user information in localStorage
       localStorage.setItem('user_id', response.data.user_id);
+      localStorage.setItem('username', response.data.username); // Assuming the backend returns the username
+      
       navigate('/chat');
     } catch (error) {
       console.error('Login failed', error);
