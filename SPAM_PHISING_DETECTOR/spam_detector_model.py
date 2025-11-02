@@ -1,6 +1,6 @@
 import pickle
 import string,nltk
-nltk.download('punk_tab')
+nltk.download('punkt_tab')
 nltk.download('punkt')
 nltk.download('stopwords')
 
