@@ -1,0 +1,12 @@
+nltk
+scikit-learn
+gunicorn
+langchain
+langchain_core
+langchain_google_genai
+langgraph
+typedict
+pydantic
+python-dotenv
+fastapi
+uvicorn
