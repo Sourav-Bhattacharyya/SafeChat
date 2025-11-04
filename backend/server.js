@@ -23,8 +23,8 @@ app.use(express.json());
 
 // Helper: call prediction service to get is_phising & is_spam
 // Ensure we send only the message text (string) to the prediction service.
-// Increase default timeout to 15s because the prediction service can be slow
-const fetchPrediction = (msg, timeout = 15000) => {
+// Increase default timeout to 30s because the prediction service can be slow (Gemini API calls)
+const fetchPrediction = (msg, timeout = 30000) => {
   const http = require('http');
   return new Promise((resolve) => {
     try {
@@ -82,12 +82,15 @@ const fetchPrediction = (msg, timeout = 15000) => {
 
       req.on('error', (err) => {
         console.error('Prediction request error:', err.message);
+        console.error('Error details:', err);
         resolve({ is_phising: false, is_spam: false });
       });
 
       req.on('timeout', () => {
+        console.error('Prediction request timed out after', timeout, 'ms');
+        console.error('This usually means the Python prediction service is slow or unresponsive.');
+        console.error('Check if Gemini API is responding or if there are rate limits.');
         req.destroy();
-        console.error('Prediction request timed out');
         resolve({ is_phising: false, is_spam: false });
       });
 
