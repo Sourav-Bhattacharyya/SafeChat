@@ -206,7 +206,8 @@ const Chat = () => {
                           )}
                         </div>
                         <span className="threat-badge">
-                          {isPhishing ? '🎣 PHISHING' : '🚫 SPAM'}
+                          {isPhishing ? '🎣 PHISHING' : ''}
+                          {isSpam ? '🚫 SPAM' : ''}
                         </span>
                       </div>
                     )}
