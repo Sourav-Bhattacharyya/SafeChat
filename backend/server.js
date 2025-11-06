@@ -37,7 +37,7 @@ const fetchPrediction = (msg, timeout = 30000) => {
       const postData = JSON.stringify({ message: text });
 
   // Debug: show what we're sending to the prediction service
-  console.log('Prediction request payload:', postData);
+  // console.log('Prediction request payload:', postData);
 
       const req = http.request({
         hostname: '127.0.0.1',
@@ -57,11 +57,11 @@ const fetchPrediction = (msg, timeout = 30000) => {
         res.on('end', () => {
           try {
             // Log raw response string for easier debugging
-            console.log('Prediction raw response (string):', data);
+            // console.log('Prediction raw response (string):', data);
             const parsed = JSON.parse(data || '{}');
             // Debug: log parsed response from predictor
-            console.log('Prediction parsed response:', parsed);
-            console.log('Prediction status code:', statusCode);
+            // console.log('Prediction parsed response:', parsed);
+            // console.log('Prediction status code:', statusCode);
             if (statusCode !== 200) {
               console.error('Prediction service returned non-200:', statusCode, parsed);
               return resolve({ is_phising: false, is_spam: false });
@@ -156,13 +156,13 @@ io.on('connection', socket => {
       });
 
       // Log the message object we'll persist
-      console.log('Saving message with flags:', messageWithFlags);
+      // console.log('Saving message with flags:', messageWithFlags);
 
       // Persist and emit the saved document (to include _id, timestamp, etc.)
       const newMessage = new Message(messageWithFlags);
       const saved = await newMessage.save();
-      console.log('Saved message:', saved);
-      io.emit('receiveMessage', saved);
+      // console.log('Saved message:', saved);
+       io.emit('receiveMessage', saved);
     } catch (err) {
       console.error('Failed to save/emit message:', err);
     }

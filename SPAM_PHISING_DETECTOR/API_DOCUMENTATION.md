@@ -22,7 +22,7 @@ Once the .env file is configured, you can start the FastAPI server using uvicorn
 
 Open your terminal in the project directory and execute the following command:
 
-uvicorn app:app \--reload \--port 8080
+uvicorn app_version_2:app \--reload \--port 8080
 
 | Parameter | Description |
 | :---- | :---- |

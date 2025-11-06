@@ -1,12 +1,9 @@
 import React, { useEffect, useState, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import io from 'socket.io-client';
 import axios from 'axios';
 import '../styles/Chat.css';
 
-const socket = io(process.env.REACT_APP_API_BASE_URL, {
-  transports: ['websocket'], // Ensure WebSocket transport is used
-  reconnection: true,        // Enable automatic reconnection
-});
 
 const Chat = () => {
   const [messages, setMessages] = useState([]);
@@ -19,6 +16,8 @@ const Chat = () => {
   });
   const messagesEndRef = useRef(null);
   const username = localStorage.getItem('username'); // Fetch username from localStorage
+  const navigate = useNavigate();
+  const socketRef = useRef(null);
 
   const emojis = ['😀', '😂', '😍', '🥰', '😎', '🤔', '👍', '❤️', '🔥', '✨', '🎉', '💯'];
 
@@ -38,6 +37,12 @@ const Chat = () => {
   }, [messages]);
 
   useEffect(() => {
+    // If user is not signed in redirect to login
+    if (!username) {
+      navigate('/');
+      return;
+    }
+
     // Fetch existing messages on load
     const fetchMessages = async () => {
       try {
@@ -51,8 +56,14 @@ const Chat = () => {
 
     fetchMessages();
 
+    // Initialize socket after we've confirmed user is signed in
+    socketRef.current = io(process.env.REACT_APP_API_BASE_URL, {
+      transports: ['websocket'], // Ensure WebSocket transport is used
+      reconnection: true,        // Enable automatic reconnection
+    });
+
     // Listen for new messages via WebSocket
-    socket.on('receiveMessage', (msg) => {
+    socketRef.current.on('receiveMessage', (msg) => {
       console.log('📨 Received message via WebSocket:', msg);
       console.log('Threat flags:', { is_phising: msg.is_phising, is_spam: msg.is_spam });
       setMessages((prevMessages) => [...prevMessages, msg]);
@@ -60,17 +71,21 @@ const Chat = () => {
 
     // Cleanup WebSocket listeners on unmount
     return () => {
-      socket.off('receiveMessage');
+      if (socketRef.current) {
+        socketRef.current.off('receiveMessage');
+        socketRef.current.disconnect();
+        socketRef.current = null;
+      }
     };
-  }, []);
+  }, [username, navigate]);
 
   const sendMessage = async () => {
     if (message.trim()) {
       const msg = { user: username, message }; // Use username instead of userId
 
       try {
-        // Emit the message to the server via WebSocket
-        socket.emit('sendMessage', msg);
+        // Emit the message to the server via WebSocket (if connected)
+        if (socketRef.current) socketRef.current.emit('sendMessage', msg);
         setMessage(''); // Clear input after sending
         setShowEmojiPicker(false);
       } catch (error) {
